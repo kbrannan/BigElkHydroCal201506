@@ -23,6 +23,4 @@ junk <- function(lng.rows,chr.name,cur,chr.names) {
 }
 for(ii in 1:length(chr.reg.eq.name)) df.reg$reg.time <- junk(tmp.rows,chr.reg.eq.name,ii,df.reg$reg.time)
   
-df.reg$reg.time <- junk(tmp.rows,chr.reg.eq.name,1,df.reg$reg.time)
-
-sapply(cur=1:length(chr.reg.eq.name),junk,tmp.rows,chr.reg.eq.name,df.reg$reg.time)
+df.reg <- df.reg[-tmp.rows[1:(length(tmp.rows)-1)],]
