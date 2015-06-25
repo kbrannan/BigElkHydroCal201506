@@ -1,6 +1,4 @@
 
-library(ggplot2)
-library(scales)
 
 fdc <- function(x) {
   y <- x[order(x,decreasing=TRUE)]
@@ -10,19 +8,21 @@ fdc <- function(x) {
   return(df.fdc)
 }
 
+plot.fdc <- function(df.fdc) {
+  require(ggplot2)
+  require(scales)
+  ylims <- c(10^floor(log10(min(df.fdc$flow))),
+             10^ceiling(log10(max(df.fdc$flow))))
+  ybreaks <- 10^(log10(ylims[1]):log10(ylims[2]))
+  p <- ggplot(data=df.fdc) + 
+    geom_line(aes(x=per.exc,y=flow)) + 
+    scale_y_continuous(trans="log10", breaks=ybreaks, limits=ylims, labels=comma) +
+    scale_x_continuous(limits=c(0,100)) +
+    xlab("Percent Exceedance") + ylab("Flow (cfs)")
+  return(p)
+}
+
+
 df.fdc.est <- fdc(df.est[,3])
 
-ylims <- c(10^floor(log10(min(df.fdc.est$flow))),10^ceiling(log10(max(df.fdc.est$flow))))
-
-ybreaks <- 10^(log10(ylims[1]):log10(ylims[2]))
-
-
-
-
-p.fdc.est <- ggplot(data=df.fdc.est) + 
-  geom_line(aes(x=per.exc,y=flow)) + 
-  scale_y_continuous(trans="log10", breaks=ybreaks, limits=ylims, labels=comma) +
-  scale_x_continuous(limits=c(0,100)) +
-  xlab("Percent Exceedance") + ylab("Flow (cfs)")
-
-plot(p.fdc.est)
+plot(plot.fdc(df.fdc.est))
