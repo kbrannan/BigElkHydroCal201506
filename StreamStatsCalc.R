@@ -36,38 +36,32 @@ df.pars <- rbind(df.pars,c("Min Jan Temp (JNT) in deg F", df.st34453.par$JANMIN)
 rm(list=ls()[-grep("(^df\\.reg$)|(^df\\.pars$)",ls())])
 df.pars <- cbind(df.pars,par.names=gsub("ft","E",gsub("^.*\\(","",gsub("\\).*$","",df.pars[,1]))))
 
+
 ### calculate the flow characteristics
-junk <- do.call(rbind,strsplit(gsub("(^ )|( $)","",gsub("[^aA-zZ]{1,}"," ", df.reg[1,3])),split=" "))
-df.pars[grep(junk[2],df.pars[,3]),2]
-paste0(df.reg[5,2],gsub("\\)","\\)\\^", df.reg[5,3]))
-gsub("(\\*\\()", "\\)\\*\\(",gsub("^\\*10","\\*10\\^\\(",df.reg[5,3]))
-gsub("(\\*\\()", "\\)\\*\\(",gsub("^\\*10","\\*10\\^\\(",gsub("\\)","\\)\\^", df.reg[5,3])))
-
-
-gsub("(?:\\*10)+","\\^\\(",df.reg[5,3])
-
-ii <- 22
-j0 <- df.reg[ii,3]
-j.pars <- do.call(rbind,strsplit(gsub("(^ )|( $)","",gsub("[^aA-zZ]{1,}"," ", j0)),split=" "))
-
-lng.rows <- sapply(paste0("^",j.pars,"$"),grep,df.pars[,3])
-
-cur.pars <- df.pars[lng.rows,2:3]
-j1 <- gsub("\\)","\\)\\^",j0)
-j2 <- gsub("\\*10","\\*10\\^\\(",j1)
-j3 <- sub("(\\*\\()","\\)\\*\\(",j2)
-
-j4 <- paste0(df.reg[ii,2],j3)
-
-j5 <- gsub(cur.pars[1,2],cur.pars[1,1],j4)
-for(ii in 2:length(cur.pars[,2])) j5 <- gsub(cur.pars[ii,2],cur.pars[ii,1],j5)
-
-j6 <- as.expression(j5)
-
-1.0138825118910877*10^(-0.8519)*(88.9)^1.0184*(79.9)^0.7811*(18.6)^0.4333*(0.36)^-0.0297
-
-gsub("(?:10)","sub",df.reg[5,3])
-
-
-gsub("\\*\\(?<=","\\*\\)\\(",df.reg[5,3])
-
+## output data.frame
+df.values <- as.data.frame(cbind(statistic=gsub("( )|(\\=)","",df.reg[,1]),reg.time=gsub(" ","",df.reg$reg.time),value=NA))
+##input
+##df.reg - data.frame of regression eqaution information
+## df.pars - data.frame of all the parameters and repsective values used in the regression equations
+for(ii in 1:length(df.values[,1])) {
+  ## start calculations
+  ## get regression equation
+  j0 <- df.reg[ii,3]
+  ## get the parameters used in the equation
+  j.pars <- do.call(rbind,strsplit(gsub("(^ )|( $)","",gsub("[^aA-zZ]{1,}"," ", j0)),split=" "))
+  ## get the rows in the parameter data.frame for the parameters used in the equation
+  lng.rows <- sapply(paste0("^",j.pars,"$"),grep,df.pars[,3])
+  ## get the paramerters and respcetive values for the parameters used in the equation
+  cur.pars <- df.pars[lng.rows,2:3]
+  ## modify equation to be evaluated
+  j1 <- gsub("\\)","\\)\\^",j0) ## add exponent notation to variables
+  j2 <- gsub("\\*10","\\*10\\^\\(",j1) ## add exponent notation to "10" at begining of eqution
+  j3 <- sub("(\\*\\()","\\)\\*\\(",j2) ## add closing parenthesis for the exponent of "10"
+  j4 <- paste0(df.reg[ii,2],j3) ## adding BCF to begining of the eqaution
+  ## put parameter values in the equation
+  j5 <- gsub(paste0("\\(",cur.pars[1,2],"\\)"),paste0("(",cur.pars[1,1],")"),j4)
+  for(jj in 2:length(cur.pars[,2])) j5 <- gsub(paste0("\\(",cur.pars[jj,2],"\\)"),paste0("(",cur.pars[jj,1],")"),j5)
+  ## calculate the eqution
+  df.values[ii,"value"] <- eval(parse(text=j5))
+}
+rm(list=ls()[-grep("(^df\\.reg$)|(^df\\.pars$)|(^df\\.values$)",ls())])
