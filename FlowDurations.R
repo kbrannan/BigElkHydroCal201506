@@ -23,6 +23,12 @@ plot.fdc <- function(df.fdc) {
 }
 
 
+
+
+df.fdc.obs <- fdc(df.obs[,3])
+
+plot(plot.fdc(df.fdc.obs))
+
 df.fdc.est <- fdc(df.est[,3])
 
 plot(plot.fdc(df.fdc.est))

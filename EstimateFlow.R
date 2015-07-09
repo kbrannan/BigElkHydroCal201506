@@ -16,5 +16,6 @@ Pu <- 84
 df.est <- df.obs
 ## estimate the flows for the Big Elk Creek.
 df.est$mean_daily_flow_cfs <- round((Au/Ar)*(Pu/Pr)*df.est$mean_daily_flow_cfs, digits=1)
-  
+## clean up
+rm(list=ls()[-grep("(df.obs)|(df.est)",ls())])
   

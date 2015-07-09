@@ -5,7 +5,7 @@ library(DVstats)
 
 df.hydsep.est <- hysep(Flow=df.est[,3],Dates=as.Date(df.est[,8]),da=88.8,select="sliding")
 
-ls.recess.est <- recess(Flow=df.est[,3],Dates=as.Date(df.est[,8]),Start="2011-01-01")
+ls.recess.est <- recess(Flow=df.est[,3],Dates=as.Date(df.est[,8]))
 
 ls.recess.est$Recessions
 
