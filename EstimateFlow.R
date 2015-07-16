@@ -1,7 +1,7 @@
 ## Estimate flow for Big Elk Crrek from observed flow from the gage on the Yaquina River.
 ## I used the drainage area methof modified with average annual precip to estimate the
-## stream flow in Big Elk Crre. This is the method used by Cadmus in the previous calibration.
-
+## stream flow in Big Elk Creek. This is the method used by Cadmus in the previous calibration.
+if(length(ls()) > 0) tmp.hold <- paste0("(",ls(),")",collapse="|")
 ## the drainage area Ar (sqr mi) and Pr average annual precip (inches) for the upper 
 ## Yaquina River watershed where the gage is. This data was taken from Table 5 in the 
 ## Cadmus report.
@@ -17,5 +17,6 @@ df.est <- df.obs
 ## estimate the flows for the Big Elk Creek.
 df.est$mean_daily_flow_cfs <- round((Au/Ar)*(Pu/Pr)*df.est$mean_daily_flow_cfs, digits=1)
 ## clean up
-rm(list=ls()[-grep("(df.obs)|(df.est)",ls())])
+if(1*exists("tmp.hold")==0) rm(list=ls()[-grep("df.est",ls())])
+if(1*exists("tmp.hold")==1) rm(list=ls()[-grep(paste0("(df.est)|",tmp.hold),ls())])
   

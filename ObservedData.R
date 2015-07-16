@@ -5,6 +5,7 @@
 ## manually from:
 ## http://apps.wrd.state.or.us/apps/sw/hydro_near_real_time/display_hydro_graph.aspx?station_nbr=14306030
 
+if(length(ls()) > 0) tmp.hold <- paste0("(",ls(),")",collapse="|")
 
 options(stringsAsFactors=FALSE)
 
@@ -15,5 +16,8 @@ df.obs <- read.table(file=paste0(chr.dir,"/",chr.file), header=TRUE, sep="\t")
 
 df.obs <-cbind(df.obs,date=strptime(df.obs$record_date,format="%m-%d-%Y"))
 
-rm(list=ls()[-grep("df.obs",ls())])
+
+
+if(1*exists("tmp.hold")==0) rm(list=ls()[-grep("df.obs",ls())])
+if(1*exists("tmp.hold")==1) rm(list=ls()[-grep(paste0("(df.obs)|",tmp.hold),ls())])
 
