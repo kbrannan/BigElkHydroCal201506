@@ -86,7 +86,7 @@ plot(plot.peak.rise.yr)
 
 ## use R command "peaks to get inflection points
 library(smwrBase)
-spn <- 7
+spn <- 3
 tmp.peaks.R <- df.est[peaks(df.est$mean_daily_flow_cfs,span=spn) == TRUE,]
 tmp.peaks.R <- cbind(tmp.peaks.R,Dates=as.Date(tmp.peaks.R$record_date,format="%m-%d-%Y"))
 tmp.rises.R <- df.est[peaks(-1*df.est$mean_daily_flow_cfs,span=spn) == TRUE,]
