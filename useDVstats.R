@@ -34,7 +34,7 @@ plot.bf.est.yr <- ggplot(data=df.yr) + xlab("") +
 plot(plot.bf.est.yr)
 
 
-## plot total flow minus baseflowfor a water year
+## plot total flow minus baseflow for a water year
 summary(suro.intflw.est[suro.intflw.est$Flow > 0,])
 tmp.strm <- suro.intflw.est
 tmp.strm$Flow <- tmp.strm$Flow + 1E-06
@@ -48,9 +48,66 @@ plot.tmp.strm.yr <- ggplot(data=df.yr) + xlab("") +
   scale_y_log10("Mean Daily Flow (cfs)",limits=c(1E-02,1E+04))
 plot(plot.tmp.strm.yr)
 
-tmp.ts <- ts(data=suro.intflw.est)
 
-plot(tmp.ts)
+## get start of rising limb and peaks
+## look at differences
+tmp.ts <- ts(data=suro.intflw.est$Flow)
+tmp.diff <- diff(tmp.ts,1)
+plot(tmp.diff)
+tmp.sign <- sign(tmp.diff[1:(length(tmp.diff.fwd)-1)]) * sign(tmp.diff.fwd[2:length(tmp.diff.fwd)])
+plot(tmp.sign)
+tmp.infl.rows <- grep("-1",as.character(tmp.sign))
+ii <- 1
+rise.peak <- function(signs.row,signs) signs[signs.row]*signs[signs.row+1]
+rise.peak(tmp.infl.rows[ii],tmp.sign)
+## rise is +1 and peaks is -1
+tmp.rise.peak <- do.call(rbind,lapply((1:length(tmp.infl.rows)),rise.peak,tmp.sign))
+tmp.rows.peak <- tmp.infl.rows[grep("^-1$",as.character(tmp.rise.peak))]
+tmp.rows.rise <- tmp.infl.rows[grep("^1$",as.character(tmp.rise.peak))]
+tmp.rises <- bf.est[tmp.rows.rise+1,]
+tmp.peaks <- bf.est[tmp.rows.peak+1,]
+
+## plot baseflow and total flow for a water year
+yr.b <- 1999
+dt.b <- as.Date(paste0(yr.b,"/10/01"))
+dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))
+if(dt.e > max(bf.est$Dates)) dt.e <- max(bf.est$Dates)
+df.yr <- bf.est[bf.est$Dates >= dt.b & bf.est$Dates <= dt.e, ]
+df.peak <- tmp.peaks[tmp.peaks$Dates >= dt.b & tmp.peaks$Dates <= dt.e, ]
+df.rise <- tmp.rises[tmp.rises$Dates >= dt.b & tmp.rises$Dates <= dt.e, ]
+plot.peak.rise.yr <- ggplot(data=df.yr) + xlab("") +
+  geom_line(stat="identity",aes(x=Dates,y=Flow,colour="blue")) +
+  geom_line(stat="identity",aes(x=Dates,y=BaseQ,colour="red"))+
+  geom_point(data=df.peak,aes(x=Dates,y=Flow)) +
+  geom_point(data=df.rise,aes(x=Dates,y=Flow)) +
+  scale_y_log10("Mean Daily Flow (cfs)")
+plot(plot.peak.rise.yr)
+
+
+## use R command "peaks to get inflection points
+library(smwrBase)
+spn <- 7
+tmp.peaks.R <- df.est[peaks(df.est$mean_daily_flow_cfs,span=spn) == TRUE,]
+tmp.peaks.R <- cbind(tmp.peaks.R,Dates=as.Date(tmp.peaks.R$record_date,format="%m-%d-%Y"))
+tmp.rises.R <- df.est[peaks(-1*df.est$mean_daily_flow_cfs,span=spn) == TRUE,]
+tmp.rises.R <- cbind(tmp.rises.R,Dates=as.Date(tmp.rises.R$record_date,format="%m-%d-%Y"))
+## plot baseflow and total flow for a water year
+yr.b <- 1999
+dt.b <- as.Date(paste0(yr.b,"/10/01"))
+dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))
+if(dt.e > max(bf.est$Dates)) dt.e <- max(bf.est$Dates)
+df.yr <- bf.est[bf.est$Dates >= dt.b & bf.est$Dates <= dt.e, ]
+df.peak <- tmp.peaks.R[tmp.peaks.R$Dates >= dt.b & tmp.peaks.R$Dates <= dt.e, ]
+df.rise <- tmp.rises.R[tmp.rises.R$Dates >= dt.b & tmp.rises.R$Dates <= dt.e, ]
+plot.peak.rise.yr <- ggplot(data=df.yr) + xlab("") +
+  geom_line(stat="identity",aes(x=Dates,y=Flow,colour="blue")) +
+  geom_line(stat="identity",aes(x=Dates,y=BaseQ,colour="red"))+
+  geom_point(data=df.peak,aes(x=Dates,y=mean_daily_flow_cfs)) +
+  geom_point(data=df.rise,aes(x=Dates,y=mean_daily_flow_cfs)) +
+  scale_y_log10("Mean Daily Flow (cfs)")
+plot(plot.peak.rise.yr)
+
+
 
 
 
@@ -71,6 +128,19 @@ df.fdc.est <- data.frame(flow=df.est$mean_daily_flow_cfs, rank=rank(df.est$mean_
 df.fdc.est <- df.fdc.est[ order(df.fdc.est$rank,decreasing=TRUE),]
 head(df.fdc.est,10)
 df.fdc.est <- data.frame(df.fdc.est,p.greater=100*(df.fdc.est$rank/length(df.fdc.est$rank)))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## plot the digression rates of measured and observed
 png(filename = paste0(file="edfflowest.png"), width = 11, height = 8.5,units = "in",res=300,bg = "white")
