@@ -12,6 +12,49 @@ summary(suro.intflw.est$Flow)
 ecdf.flow.est <- ecdf(df.est$mean_daily_flow_cfs)
 ecdf.suro.intflw.est <- ecdf(suro.intflw.est$Flow)
 
+## plot baseflow and total flow
+png(filename = paste0(file="bf_flowest.png"), width = 11, height = 8.5,units = "in",res=300,bg = "white")
+plot.bf.est <- ggplot() + xlab("") +
+  geom_line(data=bf.est,stat="identity",aes(x=Dates,y=Flow,colour="blue")) +
+  geom_line(data=bf.est,stat="identity",aes(x=Dates,y=BaseQ,colour="red"))+
+  scale_y_log10("Mean Daily Flow (cfs)")
+plot(plot.bf.est)
+dev.off()
+
+## plot baseflow and total flow for a water year
+yr.b <- 2013
+dt.b <- as.Date(paste0(yr.b,"/10/01"))
+dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))
+if(dt.e > max(bf.est$Dates)) dt.e <- max(bf.est$Dates)
+df.yr <- bf.est[bf.est$Dates >= dt.b & bf.est$Dates <= dt.e, ]
+plot.bf.est.yr <- ggplot(data=df.yr) + xlab("") +
+  geom_line(stat="identity",aes(x=Dates,y=Flow,colour="blue")) +
+  geom_line(stat="identity",aes(x=Dates,y=BaseQ,colour="red"))+
+  scale_y_log10("Mean Daily Flow (cfs)")
+plot(plot.bf.est.yr)
+
+
+## plot total flow minus baseflowfor a water year
+summary(suro.intflw.est[suro.intflw.est$Flow > 0,])
+tmp.strm <- suro.intflw.est
+tmp.strm$Flow <- tmp.strm$Flow + 1E-06
+yr.b <- 2004
+dt.b <- as.Date(paste0(yr.b,"/10/01"))
+dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))
+if(dt.e > max(tmp.strm$Dates)) dt.e <- max(tmp.strm$Dates)
+df.yr <- tmp.strm[tmp.strm$Dates >= dt.b & tmp.strm$Dates <= dt.e, ]
+plot.tmp.strm.yr <- ggplot(data=df.yr) + xlab("") +
+  geom_line(stat="identity",aes(x=Dates,y=Flow,colour="green")) +
+  scale_y_log10("Mean Daily Flow (cfs)",limits=c(1E-02,1E+04))
+plot(plot.tmp.strm.yr)
+
+tmp.ts <- ts(data=suro.intflw.est)
+
+plot(tmp.ts)
+
+
+
+
 plot(ecdf.suro.intflw.est)
 
 flow.max <- 10^(round(log10(max(df.est$mean_daily_flow_cfs,suro.intflw.est$Flow)))+1)
