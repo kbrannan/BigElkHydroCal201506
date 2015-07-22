@@ -1,6 +1,9 @@
 ## General steps
 
-## get observed data
+## get observed precip data
+source(file="GetPrecipData.R")
+
+## get observed flow data
 source(file="ObservedData.R")
 
 ## estimate flow data
