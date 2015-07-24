@@ -11,3 +11,6 @@ source(file="EstimateFlow.R")
 
 ## caclulate StreamStats
 source(file="StreamStatsCalc.R")
+
+## get a funktion
+source(file="plot_me_funk.R")

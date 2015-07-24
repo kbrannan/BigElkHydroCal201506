@@ -40,6 +40,8 @@ plot.peak.rise.yr <- ggplot(data=df.yr) + xlab("") +
   scale_y_log10("Mean Daily Flow (cfs)") + theme(legend.position="none")
 plot(plot.peak.rise.yr)
 
+junk <- 
 
+plot(plot.me(5,2001,df.est))
 ## shiny
 library(shiny)
