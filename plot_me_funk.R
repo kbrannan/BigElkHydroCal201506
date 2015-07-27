@@ -7,12 +7,9 @@ plot.me <- function(spn,yr.b,dates,flow) {
   tmp.peaks <- df.tmp[peaks(df.tmp$flow,span=spn) == TRUE,]
   tmp.rises <- df.tmp[peaks(-1*df.tmp$flow,span=spn) == TRUE,]
 
-  head(tmp.rises)
-  
   tmp.diff <- diff(tmp.rises$flow,lag=1)
   tmp.rises.sel <- tmp.rises[tmp.diff >= 0,]
-  head(tmp.rises.sel)
-  
+
   tmp.sel <- df.tmp[as.numeric(row.names(head(tmp.rises.sel)[1:2,]))[1]:as.numeric(row.names(head(tmp.rises.sel)[1:2,]))[2],]
   
   dt.b <- as.Date(paste0(yr.b,"/10/01"))

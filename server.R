@@ -2,6 +2,7 @@
 
 library(shiny)
 library(Rcpp)
+if(! exists("df.est")) source(file="GeneralSteps.R")
 source(file="plot_me_funk.R")
 
 shinyServer(function(input,output) {
