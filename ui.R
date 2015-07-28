@@ -1,5 +1,8 @@
 # ui.R
 
+if(! exists("df.est")) source(file="GeneralSteps.R")
+source(file="plot_me_funk.R")
+
 shinyUI(fluidPage(
   titlePanel("Select Storm"),
   fluidRow(plotOutput("plot")),
