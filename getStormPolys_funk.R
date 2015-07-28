@@ -4,8 +4,13 @@ df.tmp <- data.frame(date=as.Date(df.est[,8]),flow=df.est[,3])
 tmp.peaks <- df.tmp[peaks(df.tmp$flow,span=spn) == TRUE,]
 tmp.rises <- df.tmp[peaks(-1*df.tmp$flow,span=spn) == TRUE,]
 
+tmp.rises.b <- tmp.rises[order(tmp.rises$date,decreasing=TRUE),]
+
 tmp.diff <- diff(tmp.rises$flow,lag=1)
 tmp.rises.sel <- tmp.rises[tmp.diff >= 0,]
+
+tmp.diff.b <- diff(tmp.rises.b$flow,lag=1)
+tmp.rises.sel.b <- tmp.rises.b[tmp.diff.b >= 0,]
 
 
 
