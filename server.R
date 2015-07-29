@@ -7,7 +7,7 @@ shinyServer(function(input,output) {
     
     
     output$plot <- renderPlot( {
-      print(plot.me(input$spn,input$yr.b,df.est$date,df.est$mean_daily_flow_cfs))
+      plot(plot.me(input$spn,input$yr.b,df.est$date,df.est$mean_daily_flow_cfs))
     }
     )
   }

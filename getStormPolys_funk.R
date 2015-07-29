@@ -1,31 +1,24 @@
+getStormPolys <- function(df.flow,df.rises,df.rises.sel) {
+  df.ends <- sapply(df.rises.sel$date,getNextRise,df.rises)
+  df.pot.strm.bnds <- data.frame(date.bgn=df.rises.sel$date,date.end=do.call("c",df.ends[1,]),
+                                 flow.bgn=df.rises.sel$flow)
+  df.pot.storms <- do.call(rbind,lapply(seq(1:(length(df.pot.strm.bnds[,1])-1)),getStormFlows,
+                          df.flow,df.pot.strm.bnds))
+  df.pot.storms$strm.num <- factor(df.pot.storms$strm.num)
+  return(df.pot.storms)
+}
 
-df.tmp <- data.frame(date=as.Date(df.est[,8]),flow=df.est[,3])
-
-tmp.peaks <- df.tmp[peaks(df.tmp$flow,span=spn) == TRUE,]
-tmp.rises <- df.tmp[peaks(-1*df.tmp$flow,span=spn) == TRUE,]
-
-tmp.rises.b <- tmp.rises[order(tmp.rises$date,decreasing=TRUE),]
-
-tmp.diff <- diff(tmp.rises$flow,lag=1)
-tmp.rises.sel <- tmp.rises[tmp.diff >= 0,]
-
-tmp.diff.b <- diff(tmp.rises.b$flow,lag=1)
-tmp.rises.sel.b <- tmp.rises.b[tmp.diff.b >= 0,]
-
-
-
-
-
-
-getStormPolys <- function() {
-  tmp.dates <- tmp.rises[(tmp.rises$date - tmp.rises.sel$date[1]) > 0,][1,]
-  
-  tmp.ends <- sapply(tmp.rises.sel$date,getNextRise,tmp.rises)
-  
-  tmp.rises.sel.end <-data.frame(date.end=do.call("c",tmp.ends[1,]),flow.end=do.call("c",tmp.ends[2,])) 
-  
-  tmp.pot.strms <- data.frame(date.bgn=tmp.rises.sel$date, flow.bgn=tmp.rises.sel$flow,
-                              date.end=do.call("c",tmp.ends[1,]),
-                              flow.end=do.call("c",tmp.ends[2,]))
-  
+getStormFlows <- function(lng.strm,df.flow,df.pot.strm.bnds) {
+#     tmp.strm <- df.flow[as.Date(df.flow$date) >= df.pot.strm.bnds$date.bgn[lng.strm] 
+#                        & as.Date(df.flow$date) <= df.pot.strm.bnds$date.end[lng.strm], ]
+     tmp.1 <- df.flow[as.Date(df.flow$date) >= df.pot.strm.bnds$date.bgn[lng.strm] 
+                        & as.Date(df.flow$date) <= df.pot.strm.bnds$date.end[lng.strm], ]
+     tmp.2 <- tmp.1[tmp.1$flow >= df.pot.strm.bnds$flow.bgn[lng.strm],]
+     rw.max <- max(as.numeric(row.names(tmp.1)))
+     rw.flow.end <- max(as.numeric(row.names(tmp.2))) + 1
+     if(rw.flow.end > rw.max) rw.flow.end <- rw.max
+     tmp.date.end <- tmp.1$date[grep(as.character(rw.flow.end),row.names(tmp.1))]
+     tmp.strm <- tmp.1[tmp.1$date <= tmp.date.end,]
+  df.storm <- data.frame(date=as.Date(tmp.strm$date), flow=tmp.strm$flow, strm.num=lng.strm)
+  return(df.storm)  
 }
