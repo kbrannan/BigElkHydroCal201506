@@ -5,6 +5,7 @@ source(file="plot_me_funk.R")
 source(file="getNextRise_funk.R")
 source(file="getStormPolys_funk.R")
 source(file="getPotentialStormData_funk.R")
+source(file="table_me_funk.R")
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
@@ -23,6 +24,8 @@ shinyUI(fluidPage(
                   label = "Span length",
                   min = 3, max = 25, value = 5, step = 2)
       )
-    )
+    ),
+  br(),
+  fluidRow(dataTableOutput("table"))
   )
 )

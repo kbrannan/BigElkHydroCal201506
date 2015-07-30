@@ -25,5 +25,7 @@ shinyServer(function(input,output) {
         )
       }
       )
+  output$table <- renderDataTable(table.me(yr.b=input$yr.b
+                                           ,z=datasetInput()))
 }
 )
