@@ -4,11 +4,26 @@ library(shiny)
 library(Rcpp)
 
 shinyServer(function(input,output) {
-    
-    
-    output$plot <- renderPlot( {
-      plot(plot.me(input$spn,input$yr.b,df.est$date,df.est$mean_daily_flow_cfs))
+  
+  datasetInput <- reactive(
+    {
+    getPotentialStormData(spn=input$spn,
+                          dates=df.est$date,
+                          flow=df.est$mean_daily_flow_cfs
+                          )
     }
-    )
-  }
   )
+    output$plot <- renderPlot( 
+      {
+      plot(
+        plot.me(spn=input$spn,
+                yr.b=input$yr.b,
+                dates=df.est$date,
+                flow=df.est$mean_daily_flow_cfs,
+                lst.pot.strm=datasetInput()
+                )
+        )
+      }
+      )
+}
+)

@@ -1,17 +1,12 @@
-plot.me <- function(spn,yr.b,dates,flow) {
-  require(smwrBase)
+plot.me <- function(spn,yr.b,dates,flow,lst.pot.strm) {
   require(ggplot2)
-  source(file="getNextRise_funk.R")
   
   df.tmp <- data.frame(dates=as.Date(dates),flow=flow)
   
-  tmp.peaks <- df.tmp[peaks(df.tmp$flow,span=spn) == TRUE,]
-  tmp.rises <- df.tmp[peaks(-1*df.tmp$flow,span=spn) == TRUE,]
-
-  tmp.diff <- diff(tmp.rises$flow,lag=1)
-  tmp.rises.sel <- tmp.rises[tmp.diff <= 0,]
-  
-  tmp.pot.strms <- getStormPolys(df.tmp,tmp.rises,tmp.rises.sel)
+  tmp.peaks <- lst.pot.strm$peaks
+  tmp.rises <- lst.pot.strm$rises
+  tmp.rises.sel <- lst.pot.strm$rises.sel
+  tmp.pot.strms <- lst.pot.strm$pot.strm
  
   dt.b <- as.Date(paste0(yr.b,"/10/01"))
   dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))

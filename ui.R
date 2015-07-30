@@ -4,10 +4,11 @@ if(! exists("df.est")) source(file="GeneralSteps.R")
 source(file="plot_me_funk.R")
 source(file="getNextRise_funk.R")
 source(file="getStormPolys_funk.R")
+source(file="getPotentialStormData_funk.R")
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
-  fluidRow(plotOutput("plot", height=600)),
+  fluidRow(plotOutput("plot", height="600px")),
   br(),
   fluidRow(
       helpText("Select the span and what water year"),
