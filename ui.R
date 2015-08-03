@@ -9,8 +9,6 @@ source(file="table_me_funk.R")
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
-  fluidRow(plotOutput("plot", height="600px")),
-  br(),
   fluidRow(
       helpText("Select the span and what water year"),
       column(6,
@@ -25,6 +23,8 @@ shinyUI(fluidPage(
                   min = 3, max = 25, value = 5, step = 2)
       )
     ),
+  br(),
+  fluidRow(plotOutput("plot", height="600px")),
   br(),
   fluidRow(dataTableOutput("table"))
   )
