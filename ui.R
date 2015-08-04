@@ -7,6 +7,7 @@ source(file="getStormPolys_funk.R")
 source(file="getPotentialStormData_funk.R")
 source(file="table_me_funk.R")
 source(file="getPlotDate_funk.R")
+source(file="findStorm_funk.R")
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
