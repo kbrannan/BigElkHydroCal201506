@@ -16,7 +16,7 @@ plot.me <- function(spn,yr.b,dates,flow,lst.pot.strm) {
   df.peak <- tmp.peaks[tmp.peaks$date >= dt.b & tmp.peaks$date <= dt.e, ]
   df.rise <- tmp.rises[tmp.rises$date >= dt.b & tmp.rises$date <= dt.e, ]
   df.pot.strms <- tmp.pot.strms[tmp.pot.strms$date >= dt.b & tmp.pot.strms$date <= dt.e, ]
-  plot.peak.rise.yr <- ggplot() + xlab("") + ggtitle(paste0("Span = ",spn," days")) +
+  plot.peak.rise.yr <- ggplot(data=df.pot.strms) + xlab("") + ggtitle(paste0("Span = ",spn," days")) +
     geom_polygon(data=df.pot.strms,mapping=aes(x=date,y=flow,group=strm.num,fill="gray")) +
     geom_line(data=df.yr,stat="identity",aes(x=dates,y=flow, colour="blue")) +
     geom_point(data=df.peak,aes(x=dates,y=flow,colour="red",size=1)) +

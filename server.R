@@ -25,7 +25,9 @@ shinyServer(function(input,output) {
         )
       }
       )
+  output$quick <- renderText(getPlotDate(input$yr.b,input$plot_click$x))
   output$table <- renderDataTable(table.me(yr.b=input$yr.b
                                            ,z=datasetInput()))
+
 }
 )

@@ -6,6 +6,7 @@ source(file="getNextRise_funk.R")
 source(file="getStormPolys_funk.R")
 source(file="getPotentialStormData_funk.R")
 source(file="table_me_funk.R")
+source(file="getPlotDate_funk.R")
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
@@ -24,7 +25,9 @@ shinyUI(fluidPage(
       )
     ),
   br(),
-  fluidRow(plotOutput("plot", height="600px")),
+  fluidRow(verbatimTextOutput("quick")),
+  br(),
+  fluidRow(plotOutput("plot", height="600px", click = "plot_click")),
   br(),
   fluidRow(dataTableOutput("table"))
   )
