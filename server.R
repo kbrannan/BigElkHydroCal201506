@@ -25,9 +25,9 @@ shinyServer(function(input,output) {
         )
       }
       )
-  output$quick <- renderText(paste0(findStorm(dt.strm=getPlotDate(input$yr.b,input$plot_click$x),
-                                       z=datasetInput()),collapse=" ")
-                             )
+  output$quick <- renderText(if(is.numeric(input$plot_click$x) == TRUE) paste0(format(input$plot_click$x, format="%Y-%m-%d"), 
+                                                                               " ", findStorm(input$plot_click$x,datasetInput()))
+  )
 ##output$quick <- renderText(getPlotDate(input$yr.b,input$plot_click$x))
    output$table <- renderDataTable(table.me(yr.b=input$yr.b
                                            ,z=datasetInput()))
