@@ -1,6 +1,6 @@
-getPlotDate <- function(yr.b,frac) {
-  dt.b <- as.Date(paste0(yr.b,"/10/01"))
-  dt.e <- as.Date(paste0(as.numeric(format(dt.b,"%Y")) + 1,"/09/30"))
+getPlotDate <- function(dt.bnd,frac) {
+  dt.b <- as.Date(dt.bnd[1])
+  dt.e <- as.Date(dt.bnd[2])
   theDate <- as.Date(frac * (dt.e - dt.b) + dt.b)
   theStrDate <- format(theDate,"%Y-%m-%d")
   return(theStrDate)
