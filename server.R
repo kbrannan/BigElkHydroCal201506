@@ -42,10 +42,11 @@ shinyServer(function(input,output) {
       }
       )
   output$quick <- renderPrint({
-    
-    format(as.Date(input$plot_click$x),format="%Y-%m-%d")
+    if(length(input$plot_click$x) != 0) {
+      findStorm(dt.strm=format(as.Date(input$plot_click$x),format="%Y-%m-%d"),
+                x=table.me(yr.b=input$yr.b,z=datasetInput()))
+    }
     })
-
     output$table <- renderDataTable(table.me(yr.b=input$yr.b,
                                             z=datasetInput()))
 
