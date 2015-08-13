@@ -47,7 +47,7 @@ shinyServer(function(input,output) {
                 x=table.me(yr.b=input$yr.b,z=datasetInput()))
     }
     })
-    output$table <- renderDataTable(table.me(yr.b=input$yr.b,
+    output$table <- DT::renderDataTable(table.me(yr.b=input$yr.b,
                                             z=datasetInput()))
 
 }

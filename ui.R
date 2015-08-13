@@ -29,8 +29,11 @@ shinyUI(fluidPage(
   br(),
   fluidRow(verbatimTextOutput("quick")),
   br(),
-  fluidRow(plotOutput("plot", height="600px", click = "plot_click")),
+  fluidRow(plotOutput("plot", height="600px", click = "plot_click",
+                      brush = brushOpts(id = "plot_brush", fill = "#ccc", direction = "x")
+                      )
+           ),
   br(),
-  fluidRow(dataTableOutput("table"))
+  fluidRow(DT::dataTableOutput("table"))
   )
 )
