@@ -8,7 +8,7 @@ source(file="getPotentialStormData_funk.R")
 source(file="table_me_funk.R")
 source(file="getPlotDate_funk.R")
 source(file="findStorm_funk.R")
-as.Date <- zoo::as.Date
+library(zoo)
 
 shinyUI(fluidPage(
 ##  titlePanel("Select Storm"),
