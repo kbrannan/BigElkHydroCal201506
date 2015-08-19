@@ -97,3 +97,56 @@ plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.
 plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.fal,df.est=df.est.clp,df.daily.precip=df.daily.precip,
                out.file="strmInvdPlotsFall.pdf")
 rm(df.months.00,df.months.01)
+## winter strorms (Months- Dec, Jan, Feb)
+df.months.00 <- df.strm.months[df.strm.months$month.bgn %in% c("Dec","Jan","Feb"),]
+df.months.01 <- df.months.00[df.months.00$month.end %in% c("Dec","Jan","Feb"),]
+lst.pot.strm.win <- lst.pot.strm.5.single.gt0.fafp
+lst.pot.strm.win$pot.strm <- lst.pot.strm.5.single.gt0.fafp$pot.strm[lst.pot.strm.5.single.gt0.fafp$pot.strm$strm.num %in% df.months.01$strm.num,]
+plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.win,df.est.clp,df.daily.precip,"strmPlotsWinter.pdf")
+plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.win,df.est=df.est.clp,df.daily.precip=df.daily.precip,
+               out.file="strmInvdPlotsWinter.pdf")
+rm(df.months.00,df.months.01)
+## Spring strorms (Months- Mar, Apr, May)
+df.months.00 <- df.strm.months[df.strm.months$month.bgn %in% c("Mar","Apr","May"),]
+df.months.01 <- df.months.00[df.months.00$month.end %in% c("Mar","Apr","May"),]
+lst.pot.strm.spr <- lst.pot.strm.5.single.gt0.fafp
+lst.pot.strm.spr$pot.strm <- lst.pot.strm.5.single.gt0.fafp$pot.strm[lst.pot.strm.5.single.gt0.fafp$pot.strm$strm.num %in% df.months.01$strm.num,]
+plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.spr,df.est.clp,df.daily.precip,"strmPlotsSpring.pdf")
+plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.spr,df.est=df.est.clp,df.daily.precip=df.daily.precip,
+               out.file="strmInvdPlotsSpring.pdf")
+rm(df.months.00,df.months.01)
+## get storms that cross seasons
+chr.strm.sea <- c(unique(as.character(lst.pot.strm.sum$pot.strm$strm.num)),
+  unique(as.character(lst.pot.strm.fal$pot.strm$strm.num)),
+  unique(as.character(lst.pot.strm.win$pot.strm$strm.num)),
+  unique(as.character(lst.pot.strm.spr$pot.strm$strm.num))
+)
+chr.strm.sea <- chr.strm.sea[order(as.numeric(chr.strm.sea))]
+df.xsea <- df.strm.sum$strm.num[as.character(df.strm.sum$strm.num) %in% chr.strm.sea == FALSE]
+lst.pot.strm.xsea <- lst.pot.strm.5.single.gt0.fafp
+lst.pot.strm.xsea$pot.strm <- lst.pot.strm.5.single.gt0.fafp$pot.strm[lst.pot.strm.5.single.gt0.fafp$pot.strm$strm.num %in% df.xsea,]
+plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.xsea,df.est.clp,df.daily.precip,"strmPlotsXSeasons.pdf")
+plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.xsea,df.est=df.est.clp,df.daily.precip=df.daily.precip,
+               out.file="strmInvdPlotsXSeasons.pdf")
+##
+## Review general charateristics storms
+names(df.strm.sum)
+df.strm.sum <- data.frame(df.strm.sum,year=as.factor(format(df.strm.sum$date.end,format="%Y")))
+df.strm.sum <- data.frame(df.strm.sum,season=NA)
+df.strm.sum$season[as.character(df.strm.sum$strm.num) %in% unique(as.character(lst.pot.strm.xsea$pot.strm$strm.num))] <- "cross-season"
+df.strm.sum$season[as.character(df.strm.sum$strm.num) %in% unique(as.character(lst.pot.strm.sum$pot.strm$strm.num))] <- "summer"
+df.strm.sum$season[as.character(df.strm.sum$strm.num) %in% unique(as.character(lst.pot.strm.fal$pot.strm$strm.num))] <- "fall"
+df.strm.sum$season[as.character(df.strm.sum$strm.num) %in% unique(as.character(lst.pot.strm.win$pot.strm$strm.num))] <- "winter"
+df.strm.sum$season[as.character(df.strm.sum$strm.num) %in% unique(as.character(lst.pot.strm.spr$pot.strm$strm.num))] <- "spring"
+length(df.strm.sum$length.days)
+summaryBy(length.days~year,df.strm.sum,FUN=length)
+summaryBy(length.days~season,df.strm.sum,FUN=length)
+summaryBy(length.days~year+season,df.strm.sum,FUN=length)
+
+summary(df.strm.sum$peak)
+summary(df.strm.sum$sum.cuft)
+summary(df.strm.sum$peak)
+
+summaryBy(length.days~year,df.strm.sum,FUN=summary)
+
+
