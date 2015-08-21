@@ -142,11 +142,9 @@ length(df.strm.sum$length.days)
 summaryBy(length.days~year,df.strm.sum,FUN=length)
 summaryBy(length.days~season,df.strm.sum,FUN=length)
 summaryBy(length.days~year+season,df.strm.sum,FUN=length)
-
 summary(df.strm.sum$peak)
 summary(df.strm.sum$sum.cuft)
 summary(df.strm.sum$peak)
-
 summaryBy(length.days~year,df.strm.sum,FUN=summary)
 
 
