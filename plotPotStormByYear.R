@@ -7,7 +7,7 @@ plotToFile <- function(y.b=NULL,lst.pot.strm=lst.pot.strm,df.est=df.est,df.daily
   df.tmp <- data.frame(dates=as.Date(df.est$date),flow=df.est$mean_daily_flow_cfs)
   df.p <- data.frame(date=df.daily.precip$date,p=df.daily.precip$prec11)
   df.tmp <- data.frame(dates=as.Date(df.est$date),flow=df.est$mean_daily_flow_cfs)
-  df.p <- data.frame(date=df.daily.precip$date,p=df.daily.precip$prec11)
+  df.p <- data.frame(date=df.daily.precip$date,p=df.daily.precip$p)
   tmp.peaks <- lst.pot.strm$peaks
   tmp.rises <- lst.pot.strm$rises
   tmp.rises.sel <- lst.pot.strm$rises.sel

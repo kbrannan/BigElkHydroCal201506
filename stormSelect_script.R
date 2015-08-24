@@ -1,9 +1,11 @@
-source(file="plotPotStormByYear.R")
 
 ## set inital pars
 spn <- 5 ## span of 5 days to find mins and maxs
 dt.max.p <- max(df.daily.precip$date)
 df.est.clp <- df.est[as.Date(df.est$date) <= dt.max.p,]
+df.daily.precip <- data.frame(df.daily.precip,p=apply(df.daily.precip[,c("prec11","prec31")],MARGIN=1,FUN=max))
+
+
 
 ## get boundaries of potential storms, see function for rules to get boudaries
 lst.pot.strm <- getPotentialStormData(spn=spn,dates=df.est.clp$date,flow=df.est.clp$mean_daily_flow_cfs)
@@ -47,9 +49,7 @@ df.pot.00 <- merge(x=lst.pot.strm.5.single.gt0$pot.strm,y=df.daily.precip, by="d
 df.pot.01 <- data.frame(df.pot.00,p=pmax(df.pot.00$prec11,df.pot.00$prec31))
 dtpeak <- function(x.date,x.val) x.date[x.val == max(x.val)]
 df.pot.00.p.max <- summaryBy(p ~ strm.num,data=df.pot.01, FUN=max)
-by(df.pot.01,df.pot.01$strm.num,max)
 df.pot.00.f.max <- summaryBy(flow ~ strm.num,data=df.pot.01, FUN=max)
-df.pot.01$date[df.pot.01$flow %in% ]
 junk <- data.frame(strm.num=unique(df.pot.00$strm.num),date.p=as.Date("1967-07-02"),date.f=as.Date("1967-07-02"),diff=0)
 for( ii in junk$strm.num) {
   tmp.d <- df.pot.01[df.pot.01$strm.num == ii,]
@@ -64,6 +64,17 @@ lst.pot.strm.5.single.gt0.fafp$pot.strm <- df.pot.02
 plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.5.single.gt0.fafp,df.est.clp,df.daily.precip,"strmPlots5Singlegt0fafp.pdf")
 plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.5.single.gt0.fafp,df.est=df.est.clp,df.daily.precip=df.daily.precip,
                out.file="strmInvdPlots5singlegt0fafp.pdf")
+## keep storms with precip >= 0.1 inch
+df.pot.00 <- summaryBy(p ~ strm.num,data=lst.pot.strm.5.single.gt0.fafp$pot.strm, FUN=sum)
+head(df.pot.00[order(df.pot.00$p.sum), ], 25)
+keep.strm.nums <- as.numeric(df.pot.00$strm.num[df.pot.00$p >= 0.1])
+lst.pot.strm.5.single.gt0.fafp.pgt01 <- lst.pot.strm.5.single.gt0.fafp
+lst.pot.strm.5.single.gt0.fafp.pgt01$pot.strm <- lst.pot.strm.5.single.gt0.fafp$pot.strm[lst.pot.strm.5.single.gt0.fafp$pot.strm$strm.num %in% keep.strm.nums, ]
+plotToFile(as.numeric(unique(format(df.est.clp$date,format="%Y"))),lst.pot.strm.5.single.gt0.fafp.pgt01,df.est.clp,df.daily.precip,"strmPlots5Singlegt0fafppgt01.pdf")
+plotIndvToFile(tmp.lst.pot.strm=lst.pot.strm.5.single.gt0.fafp.pgt01,df.est=df.est.clp,df.daily.precip=df.daily.precip,
+               out.file="strmInvdPlots5singlegt0fafppgt01.pdf")
+
+
 ## check storms by seasons
 ## seasons as defined by HSPEXP
 ## Summer Jun-Aug
@@ -148,3 +159,10 @@ summary(df.strm.sum$peak)
 summaryBy(length.days~year,df.strm.sum,FUN=summary)
 
 
+## final storms
+df.strm.sum <- table.me(yr.b=NULL,z=lst.pot.strm.5.single.gt0.fafp.pgt01)
+library(xtable)
+xt <- xtable(df.strm.sum)
+pdf(file="strm_sum.pdf")
+print(xt)
+dev.off()
